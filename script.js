@@ -97,10 +97,12 @@ dropArea.addEventListener('click', () => {
 input.addEventListener('change', event => {
   const file = event.target.files[0];
 
-  if (file) {
+  if (file && file.type.startsWith('image/')) {
     pendingFile = file;
 
     showModal();
+  } else {
+    alert('That file does not appear to be an image!');
   }
 });
 
@@ -135,10 +137,12 @@ document.addEventListener('drop', event => {
   event.preventDefault();
   const file = event.dataTransfer.files[0];
 
-  if (file) {
+  if (file && file.type.startsWith('image/')) {
     pendingFile = file;
 
     showModal();
+  } else {
+    alert('That file does not appear to be an image!');
   }
 });
 
