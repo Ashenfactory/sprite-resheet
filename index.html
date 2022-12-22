@@ -1,0 +1,187 @@
+<!DOCTYPE  html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sprite Resheet - Redo sprite sheet padding</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <form method="post" id="sprite-settings" class="settings-form">
+      <div class="input-container">
+        <label>Sprite width</label>
+        <div class="number-input">
+          <input type="number" name="sprite-x" step="1" min="1" value="16">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Sprite height</label>
+        <div class="number-input">
+          <input type="number" name="sprite-y" step="1" min="1" value="16">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Padding width</label>
+        <div class="number-input">
+          <input type="number" name="padding-x" step="1" min="0" value="1">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Padding height</label>
+        <div class="number-input">
+          <input type="number" name="padding-y" step="1" min="0" value="1">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Buffer width</label>
+        <div class="number-input">
+          <input type="number" name="buffer-x" step="1" min="0" value="1">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div class="input-container">
+        <label>Buffer height</label>
+        <div class="number-input">
+          <input type="number" name="buffer-y" step="1" min="0" value="1">
+          <div class="number-control-container">
+            <button type="button" class="increment" tabindex="-1"></button>
+            <button type="button" class="decrement" tabindex="-1"></button>
+          </div>
+        </div>
+      </div>
+      <div>
+        <label>Padding color</label>
+        <input type="color" name="padding-color" value="#000000">
+      </div>
+      <div>
+        <label>Color alpha</label>
+        <input type="range" step="1" min="0" max="255" name="padding-color-alpha" value="0">
+      </div>
+      <div class="settings-buttons">
+        <button id="generate" type="submit" disabled>Generate</button>
+        <button id="download" type="button" disabled>Download</button>
+        <button id="upload" type="button">Upload</button>
+      </div>
+    </form>
+
+    <div id="drop-area" class="drag-area">
+      <header>Upload image</header>
+      <input type="file" hidden>
+    </div>
+  </div>
+
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <form method="post" id="sprite-import" class="settings-form">
+        <div class="input-container">
+          <label>Sprite width</label>
+          <div class="number-input">
+            <input type="number" name="sprite-x" step="1" min="1" value="16">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Sprite height</label>
+          <div class="number-input">
+            <input type="number" name="sprite-y" step="1" min="1" value="16">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Padding width</label>
+          <div class="number-input">
+            <input type="number" name="padding-x" step="1" min="0" value="1">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Padding height</label>
+          <div class="number-input">
+            <input type="number" name="padding-y" step="1" min="0" value="1">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Crop left</label>
+          <div class="number-input">
+            <input type="number" name="offset-x" step="1" min="0" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Crop top</label>
+          <div class="number-input">
+            <input type="number" name="offset-y" step="1" min="0" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Crop Right</label>
+          <div class="number-input">
+            <input type="number" name="offset-neg-x" step="1" min="0" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="input-container">
+          <label>Crop Bottom</label>
+          <div class="number-input">
+            <input type="number" name="offset-neg-y" step="1" min="0" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+        </div>
+        <div class="settings-buttons">
+          <button type="submit">Generate</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="data-container" class="hidden"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>
