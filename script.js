@@ -5,6 +5,11 @@ let imageName;
 let pendingFile;
 
 function showModal() {
+  document.querySelector('#sprite-import [name=sprite-x]').value = document.querySelector('#sprite-settings [name=sprite-x]').value;
+  document.querySelector('#sprite-import [name=sprite-y]').value = document.querySelector('#sprite-settings [name=sprite-y]').value;
+  document.querySelector('#sprite-import [name=padding-x]').value = document.querySelector('#sprite-settings [name=padding-x]').value;
+  document.querySelector('#sprite-import [name=padding-y]').value = document.querySelector('#sprite-settings [name=padding-y]').value;
+
   document.getElementById('modal').classList.add('show');
 }
 
@@ -56,6 +61,11 @@ function generateSheet(initial = false) {
       document.getElementById('download').removeAttribute('disabled');
       document.getElementById('generate').removeAttribute('disabled');
 
+      document.querySelector('#sprite-settings [name=sprite-x]').value = settings['sprite-x'];
+      document.querySelector('#sprite-settings [name=sprite-y]').value = settings['sprite-y'];
+      document.querySelector('#sprite-settings [name=padding-x]').value = settings['padding-x'];
+      document.querySelector('#sprite-settings [name=padding-y]').value = settings['padding-y'];
+
       hideModal();
 
       generateSheet(false);
@@ -97,12 +107,29 @@ dropArea.addEventListener('click', () => {
 input.addEventListener('change', event => {
   const file = event.target.files[0];
 
-  if (file && file.type.startsWith('image/')) {
-    pendingFile = file;
+  if (file) {
+    if (file.type.startsWith('image/')) {
+      pendingFile = file;
 
-    showModal();
-  } else {
-    alert('That file does not appear to be an image!');
+      showModal();
+    } else {
+      alert('That file does not appear to be an image!');
+    }
+  }
+});
+
+document.addEventListener('drop', event => {
+  event.preventDefault();
+  const file = event.dataTransfer.files[0];
+
+  if (file) {
+    if (file.type.startsWith('image/')) {
+      pendingFile = file;
+
+      showModal();
+    } else {
+      alert('That file does not appear to be an image!');
+    }
   }
 });
 
@@ -128,22 +155,9 @@ document.getElementById('download').addEventListener('click', () => {
   const link = document.createElement('a');
 
   link.download = imageName;
-  link.href = document.getElementById('image-content').src;
+  link.href = document.getElementById('display').toDataURL();
 
   link.click();
-});
-
-document.addEventListener('drop', event => {
-  event.preventDefault();
-  const file = event.dataTransfer.files[0];
-
-  if (file && file.type.startsWith('image/')) {
-    pendingFile = file;
-
-    showModal();
-  } else {
-    alert('That file does not appear to be an image!');
-  }
 });
 
 document.addEventListener('dragover', event => {
