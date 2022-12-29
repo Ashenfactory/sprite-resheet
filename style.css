@@ -37,6 +37,7 @@ button {
   max-height: 100%;
   max-width: calc(100% - 2rem);
   position: relative;
+  overflow: hidden;
 }
 
 .drag-area:not(.has-image):hover {
@@ -46,9 +47,14 @@ button {
   border-style: solid;
 }
 
+.drag-area:not(.has-image) canvas {
+  display: none;
+}
+
 .drag-area.has-image {
- background-image: linear-gradient(to left bottom, #e05780, #ca4b71, #b43f62, #9f3354, #8a2846);
- border-style: solid;
+  background: linear-gradient(to bottom left, #8a2847, #e05881);
+  border-style: solid;
+  cursor: move;
 }
 
 .drag-area header {
@@ -57,12 +63,19 @@ button {
   color: #fff;
 }
 
+.drag-area.has-image header {
+  display: none;
+}
+
 .drag-area canvas {
   height: 100%;
   width: 100%;
   position: absolute;
   object-fit: contain;
-  image-rendering: pixelated;
+}
+
+canvas {
+  image-rendering: crisp-edges;
 }
 
 .settings-form {
@@ -240,12 +253,6 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.modal-content {
-}
-
-.modal .settings-buttons {
 }
 
 .hidden {

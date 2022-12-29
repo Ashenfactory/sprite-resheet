@@ -78,7 +78,6 @@
         <input type="range" step="1" min="0" max="255" name="padding-color-alpha" value="0">
       </div>
       <div class="settings-buttons">
-        <button id="generate" type="submit" disabled>Generate</button>
         <button id="download" type="button" disabled>Download</button>
         <button id="upload" type="button">Upload</button>
       </div>
@@ -86,6 +85,7 @@
 
     <div id="drop-area" class="drag-area">
       <header>Upload image</header>
+      <canvas id="target"></canvas>
       <input type="file" accept="image/*" hidden>
     </div>
   </div>
@@ -180,7 +180,10 @@
     </div>
   </div>
 
-  <div id="data-container" class="hidden"></div>
+  <div id="data-container" class="hidden">
+    <canvas id="temp"></canvas>
+    <canvas id="canvas"></canvas>
+  </div>
 
   <script src="script.js?v=2"></script>
 </body>
