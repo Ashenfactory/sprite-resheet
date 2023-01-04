@@ -4,16 +4,18 @@
   box-sizing: border-box;
 }
 
-body {
+body,
+html {
   min-width: 320px;
-  min-height: 100vh;
+  min-height: 640px;
+  height: 100%
 }
 
 .container {
+  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100vh;
   background: #8a2846;
 }
 
@@ -33,18 +35,18 @@ button {
   justify-content: center;
   flex-direction: column;
   margin: 1rem;
-  transition: opacity .2s ease, background .2s ease;
-  max-height: 100%;
-  max-width: calc(100% - 2rem);
+  transition: opacity .2s ease, background .2s ease, outline-color .2s ease-in;
   position: relative;
   overflow: hidden;
+  outline: solid transparent 4px;
+  outline-offset: -4px;
 }
 
 .drag-area:not(.has-image):hover {
   cursor: pointer;
   opacity: .5;
   background-color: #b9375e;
-  border-style: solid;
+  outline-color: #fff;
 }
 
 .drag-area:not(.has-image) canvas {
@@ -53,7 +55,7 @@ button {
 
 .drag-area.has-image {
   background: linear-gradient(to bottom left, #8a2847, #e05881);
-  border-style: solid;
+  outline-color: #fff;
   cursor: move;
 }
 
@@ -71,13 +73,15 @@ button {
   height: 100%;
   width: 100%;
   object-fit: contain;
+  transition: opacity .2s ease;
 }
 
 .drag-area.loading canvas{
   opacity: .5;
 }
 
-.drag-area.loading:before {
+.drag-area:before {
+  pointer-events: none;
   z-index: 1;
   content: '';
   display: block;
@@ -86,10 +90,16 @@ button {
   left: 50%;
   transform: translate(-50%, -50%);
   width: 150px;
+  opacity: 0;
   aspect-ratio: 1;
   background: no-repeat linear-gradient(#fff 0 0) 0% 50%, no-repeat linear-gradient(#fff 0 0) 50% 50%, no-repeat linear-gradient(#fff 0 0) 100% 50%;
   background-size: 20% 100%;
   animation: load 1s infinite linear;
+  transition: opacity .2s ease;
+}
+
+.drag-area.loading:before {
+  opacity: 1;
 }
 
 @keyframes load {
@@ -297,8 +307,4 @@ input[type=number]::-webkit-outer-spin-button {
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.hidden {
-  display: none;
 }

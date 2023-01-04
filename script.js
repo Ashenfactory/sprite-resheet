@@ -1,8 +1,21 @@
 const dropArea = document.getElementById('drop-area');
 const input = dropArea.querySelector('input');
 const targetCanvas = document.getElementById('target');
+const targetCtx = targetCanvas.getContext('bitmaprenderer');
+const dataCanvas = document.createElement('canvas');
+const dataCtx = dataCanvas.getContext('2d');
 const spriteSettings = document.getElementById('sprite-settings');
 const spriteImport = document.getElementById('sprite-import');
+
+const acceptedTypes = [
+  'image/png',
+  'image/jpeg',
+  'image/gif',
+  'image/webp',
+  'image/avif',
+  'image/bmp',
+  'image/x-icon'
+];
 
 let debounce = false;
 let debounceTimer;
@@ -37,8 +50,6 @@ function hideModal() {
 }
 
 function generateSheet(initial = false) {
-  const canvas = document.getElementById('canvas');
-  const ctx = canvas.getContext('2d');
   const settings = {};
 
   dropArea.classList.add('loading');
@@ -52,7 +63,7 @@ function generateSheet(initial = false) {
     debounceTimer = setTimeout(() => {
       debounce = false;
       generateSheet(initial);
-    }, 500);
+    }, 200);
 
     return;
   }
@@ -61,7 +72,7 @@ function generateSheet(initial = false) {
     debounce = true;
     debounceTimer = setTimeout(() => {
       debounce = false;
-    }, 500);
+    }, 200);
 
     worker = new Worker('sheet-worker.js');
   }
@@ -69,14 +80,31 @@ function generateSheet(initial = false) {
   if (initial) {
     new FormData(spriteImport).forEach((value, key) => (settings[key] = parseInt(value)));
 
-    const tempCanvas = document.getElementById('temp');
-    const tempCtx = tempCanvas.getContext('2d');
     const imageElm = new Image();
 
     imageElm.addEventListener('load', () => {
+      if (imageElm.width === 0 || imageElm.height === 0) {
+        alert('Invalid image!');
+        return;
+      }
+
+      const tempCanvas = document.createElement('canvas');
+      const tempCtx = tempCanvas.getContext('2d');
+
       tempCanvas.width = imageElm.width - settings['offset-x'] - settings['offset-neg-x'];
       tempCanvas.height = imageElm.height - settings['offset-y'] - settings['offset-neg-y'];
-      tempCtx.drawImage(imageElm, settings['offset-x'], settings['offset-y'], imageElm.width - settings['offset-x'] - settings['offset-neg-x'], imageElm.height - settings['offset-y'] - settings['offset-neg-y'], 0, 0, tempCanvas.width, tempCanvas.height);
+
+      tempCtx.drawImage(imageElm,
+        settings['offset-x'],
+        settings['offset-y'],
+        imageElm.width - settings['offset-x'] - settings['offset-neg-x'],
+        imageElm.height - settings['offset-y'] - settings['offset-neg-y'],
+        0,
+        0,
+        tempCanvas.width,
+        tempCanvas.height
+      );
+
       URL.revokeObjectURL(imageElm.src);
 
       imageName = pendingFile.name;
@@ -85,14 +113,21 @@ function generateSheet(initial = false) {
       const xLength = Math.ceil(tempCanvas.width / (settings['sprite-x'] + settings['padding-x']));
       const yLength = Math.ceil(tempCanvas.height / (settings['sprite-y'] + settings['padding-y']));
 
-      canvas.width = xLength * settings['sprite-x'];
-      canvas.height = yLength * settings['sprite-y'];
+      dataCanvas.width = xLength * settings['sprite-x'];
+      dataCanvas.height = yLength * settings['sprite-y'];
 
       for (let y = 0; y < yLength; y++) {
         for (let x = 0; x < xLength; x++) {
-          const data = tempCtx.getImageData((x * settings['sprite-x']) + (x * settings['padding-x']), (y * settings['sprite-y']) + (y * settings['padding-y']), settings['sprite-x'], settings['sprite-y']);
-
-          ctx.putImageData(data, x * settings['sprite-x'], y * settings['sprite-y']);
+          dataCtx.drawImage(tempCanvas,
+            (x * settings['sprite-x']) + (x * settings['padding-x']),
+            (y * settings['sprite-y']) + (y * settings['padding-y']),
+            settings['sprite-x'],
+            settings['sprite-y'],
+            x * settings['sprite-x'],
+            y * settings['sprite-y'],
+            settings['sprite-x'],
+            settings['sprite-y']
+          );
         }
       }
 
@@ -118,32 +153,35 @@ function generateSheet(initial = false) {
   } else {
     new FormData(spriteSettings).forEach((value, key) => (settings[key] = value.startsWith('#') ? value : parseInt(value)));
 
-    const targetCtx = targetCanvas.getContext('bitmaprenderer');
+    settings.xLength = Math.ceil(dataCanvas.width / settings['sprite-x']);
+    settings.yLength = Math.ceil(dataCanvas.height / settings['sprite-y']);
 
-    settings.xLength = Math.ceil(canvas.width / settings['sprite-x']);
-    settings.yLength = Math.ceil(canvas.height / settings['sprite-y']);
-
-    const targetWidth = canvas.width + (settings.xLength * settings['padding-x']) - settings['padding-x'] + (settings['buffer-x'] * 2);
-    const targetHeight = canvas.height + (settings.yLength * settings['padding-y']) - settings['padding-y'] + (settings['buffer-y'] * 2);
+    const targetWidth = dataCanvas.width + (settings.xLength * settings['padding-x']) - settings['padding-x'] + (settings['buffer-x'] * 2);
+    const targetHeight = dataCanvas.height + (settings.yLength * settings['padding-y']) - settings['padding-y'] + (settings['buffer-y'] * 2);
 
     maxScale = Math.floor(Math.sqrt(Math.max(targetWidth, targetHeight)));
 
-    canvas.toBlob(blob => {
+    dataCanvas.toBlob(blob => {
       const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
 
       worker.postMessage({msg: 'init', canvas: offscreenCanvas, settings: settings, sourceData: blob}, [offscreenCanvas]);
 
       worker.addEventListener('message', event => {
         if (event.data.msg === 'render') {
-          targetCanvas.width = targetWidth;
-          targetCanvas.height = targetHeight;
-          targetCtx.transferFromImageBitmap(event.data.bitmap);
+          if (event.data.bitmap.width === 0 && event.data.bitmap.height === 0) {
+            generateSheet();
+          } else {
+            targetCanvas.width = targetWidth;
+            targetCanvas.height = targetHeight;
 
-          if (!activeCanvas) {
-            activateCanvas();
+            targetCtx.transferFromImageBitmap(event.data.bitmap);
+
+            if (!activeCanvas) {
+              activateCanvas();
+            }
+
+            dropArea.classList.remove('loading');
           }
-
-          dropArea.classList.remove('loading');
         }
       });
     });
@@ -153,9 +191,7 @@ function generateSheet(initial = false) {
 function activateCanvas() {
   activeCanvas = true;
 
-  dropArea.addEventListener('pointermove', event => {
-    event.preventDefault();
-
+  document.addEventListener('pointermove', event => {
     if (dragging) {
       position.x = position.x + ((event.clientX - lastPosition.x) / scale);
       position.y = position.y + ((event.clientY - lastPosition.y) / scale);
@@ -165,6 +201,8 @@ function activateCanvas() {
 
       transformCanvas();
     }
+  }, {
+    passive: true
   });
 
   dropArea.addEventListener('wheel', event => {
@@ -179,6 +217,8 @@ function activateCanvas() {
     }
 
     transformCanvas();
+  }, {
+    passive: false
   });
 
   dropArea.addEventListener('dblclick', event => {
@@ -186,7 +226,7 @@ function activateCanvas() {
     resetCanvas();
   });
 
-  document.addEventListener('pointerdown', event => {
+  dropArea.addEventListener('pointerdown', event => {
     if (event.target.closest('#drop-area') && event.buttons !== 2) {
       dragging = true;
       lastPosition.x = event.clientX;
@@ -223,12 +263,12 @@ input.addEventListener('change', event => {
   const file = event.target.files[0];
 
   if (file) {
-    if (file.type.startsWith('image/')) {
+    if (acceptedTypes.includes(file.type)) {
       pendingFile = file;
 
       showModal();
     } else {
-      alert('"' + file.name + '" does not appear to be an image!');
+      alert('"' + file.name + '" seems to be of the type "' + file.type + '", which is not supported!');
     }
   }
 });
@@ -238,12 +278,12 @@ document.addEventListener('drop', event => {
   const file = event.dataTransfer.files[0];
 
   if (file) {
-    if (file.type.startsWith('image/')) {
+    if (acceptedTypes.includes(file.type)) {
       pendingFile = file;
 
       showModal();
     } else {
-      alert('"' + file.name + '" does not appear to be an image!');
+      alert('"' + file.name + '" seems to be of the type "' + file.type + '", which is not supported!');
     }
   }
 });

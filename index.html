@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sprite Resheet - Redo sprite sheet padding</title>
-    <link rel="stylesheet" href="style.css?v=3">
+    <link rel="stylesheet" href="style.css?v=4">
     <link rel="icon" href="favicon.png">
 </head>
 <body>
@@ -86,7 +86,7 @@
     <div id="drop-area" class="drag-area">
       <header>Upload image</header>
       <canvas id="target"></canvas>
-      <input type="file" accept="image/*" hidden>
+      <input type="file" accept="image/png, image/jpeg, image/gif, image/webp, image/avif, image/bmp, image/x-icon" hidden>
     </div>
   </div>
 
@@ -114,7 +114,7 @@
           </div>
         </div>
         <div class="input-container">
-          <label>Padding width</label>
+          <label>Crop width</label>
           <div class="number-input">
             <input type="number" name="padding-x" step="1" min="0" value="0">
             <div class="number-control-container">
@@ -124,7 +124,7 @@
           </div>
         </div>
         <div class="input-container">
-          <label>Padding height</label>
+          <label>Crop height</label>
           <div class="number-input">
             <input type="number" name="padding-y" step="1" min="0" value="0">
             <div class="number-control-container">
@@ -180,11 +180,6 @@
     </div>
   </div>
 
-  <div id="data-container" class="hidden">
-    <canvas id="temp"></canvas>
-    <canvas id="canvas"></canvas>
-  </div>
-
-  <script src="script.js?v=3"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
