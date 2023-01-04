@@ -70,8 +70,34 @@ button {
 .drag-area canvas {
   height: 100%;
   width: 100%;
-  position: absolute;
   object-fit: contain;
+}
+
+.drag-area.loading canvas{
+  opacity: .5;
+}
+
+.drag-area.loading:before {
+  z-index: 1;
+  content: '';
+  display: block;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 150px;
+  aspect-ratio: 1;
+  background: no-repeat linear-gradient(#fff 0 0) 0% 50%, no-repeat linear-gradient(#fff 0 0) 50% 50%, no-repeat linear-gradient(#fff 0 0) 100% 50%;
+  background-size: 20% 100%;
+  animation: load 1s infinite linear;
+}
+
+@keyframes load {
+  0% {background-size: 20% 100%, 20% 100%, 20% 100%}
+  33% {background-size: 20% 10%, 20% 100%, 20% 100%}
+  50% {background-size: 20% 100%, 20% 10%, 20% 100%}
+  66% {background-size: 20% 100%, 20% 100%, 20% 10%}
+  100% {background-size: 20% 100%, 20% 100%, 20% 100%}
 }
 
 canvas {
@@ -100,12 +126,18 @@ canvas {
   margin-bottom: 1rem;
 }
 
-input[type=range],
-input[type=color] {
+input[type=color],
+input[type=checkbox] {
   cursor: pointer;
 }
 
-.settings-form input {
+input[type=color][disabled] {
+  opacity: .2;
+  background-color: #ccc;
+  cursor: auto;
+}
+
+.settings-form input:not([type=checkbox]) {
   display: inline-block;
   width: 100%;
   height: 2rem;
@@ -117,15 +149,26 @@ input[type=color] {
   font-weight: 500;
 }
 
+.color-container {
+  display: flex;
+  flex-direction: row;
+}
+
+input[type=checkbox] {
+  height: 1.5rem;
+  width: 1.5rem;
+  margin: auto 0;
+}
+
 .settings-form input[type=number] {
   border-bottom: 2px solid #fff;
   padding: .2rem .5rem;
   background-color: #8a2846;
 }
 
-.settings-form input[type=range],
 .settings-form input[type=color] {
-  width: 7rem;
+  width: calc(100% - 2rem);
+  margin-left: auto;
 }
 
 .settings-form .settings-buttons {
@@ -224,7 +267,7 @@ input[type=number]::-webkit-outer-spin-button {
   display: block;
   position: absolute;
   content: '';
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 6'%3E%3Cpath fill='none' stroke='%23fff' d='m1 5 2-2 2 2'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 6'%3E%3Cpath fill='none' stroke='%23fff' d='m1 4 2-2 2 2'/%3E%3C/svg%3E");
   background-size: cover;
   background-repeat: no-repeat;
   height: 1rem;
@@ -246,6 +289,7 @@ input[type=number]::-webkit-outer-spin-button {
   width: 100%;
   background-color: rgba(0, 0, 0, .5);
   min-width: 320px;
+  z-index: 2;
 }
 
 .modal.show {
@@ -257,44 +301,4 @@ input[type=number]::-webkit-outer-spin-button {
 
 .hidden {
   display: none;
-}
-
-input[type=range] {
-  height: 25px;
-  -webkit-appearance: none;
-  margin: 0;
-  width: 100%;
-}
-
-input[type=range]:focus {
-  outline: none;
-}
-
-input[type=range]::-webkit-slider-runnable-track,
-input[type=range]::-moz-range-track {
-  width: 100%;
-  height: 4px;
-  box-shadow: 0 0 0 #000;
-  background: #fff;
-  border-radius: 0;
-  border: 0 solid #000;
-}
-
-input[type=range]::-webkit-slider-thumb,
-input[type=range]::-moz-range-thumb {
-  box-shadow: 0 0 0 #000;
-  border: 1px solid #e3e3e3;
-  height: 18px;
-  width: 18px;
-  border-radius: 25px;
-  background: #fff;
-}
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  margin-top: -7px;
-}
-
-input[type=range]:focus::-webkit-slider-runnable-track {
-  background: #fff;
 }

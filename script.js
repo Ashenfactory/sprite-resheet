@@ -4,12 +4,15 @@ const targetCanvas = document.getElementById('target');
 const spriteSettings = document.getElementById('sprite-settings');
 const spriteImport = document.getElementById('sprite-import');
 
+let debounce = false;
+let debounceTimer;
+let worker;
 let activeCanvas = false;
-
 let imageName;
 let pendingFile;
 let dragging = false;
 let scale = 1;
+let maxScale;
 
 const lastPosition = {
   x: 0,
@@ -22,12 +25,11 @@ const position = {
 };
 
 function showModal() {
-  spriteImport.querySelector('[name=sprite-x]').value = spriteSettings.querySelector('[name=sprite-x]').value;
-  spriteImport.querySelector('[name=sprite-y]').value = spriteSettings.querySelector('[name=sprite-y]').value;
-  spriteImport.querySelector('[name=padding-x]').value = spriteSettings.querySelector('[name=padding-x]').value;
-  spriteImport.querySelector('[name=padding-y]').value = spriteSettings.querySelector('[name=padding-y]').value;
+  spriteImport.reset();
 
   document.getElementById('modal').classList.add('show');
+
+  spriteImport.querySelector('input').focus();
 }
 
 function hideModal() {
@@ -38,6 +40,31 @@ function generateSheet(initial = false) {
   const canvas = document.getElementById('canvas');
   const ctx = canvas.getContext('2d');
   const settings = {};
+
+  dropArea.classList.add('loading');
+
+  if (worker) {
+    worker.terminate();
+  }
+
+  if (debounce) {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => {
+      debounce = false;
+      generateSheet(initial);
+    }, 500);
+
+    return;
+  }
+
+  if (!initial) {
+    debounce = true;
+    debounceTimer = setTimeout(() => {
+      debounce = false;
+    }, 500);
+
+    worker = new Worker('sheet-worker.js');
+  }
 
   if (initial) {
     new FormData(spriteImport).forEach((value, key) => (settings[key] = parseInt(value)));
@@ -85,54 +112,48 @@ function generateSheet(initial = false) {
 
     imageElm.src = URL.createObjectURL(pendingFile);
 
-    if (activeCanvas) {    
-      scale = 1
-      lastPosition.x = 0;
-      lastPosition.y = 0;
-      position.x = 0;
-      position.y = 0;
-
-      transformCanvas();
+    if (activeCanvas) {
+      resetCanvas();
     }
   } else {
     new FormData(spriteSettings).forEach((value, key) => (settings[key] = value.startsWith('#') ? value : parseInt(value)));
 
-    const targetCtx = targetCanvas.getContext('2d');
-    const xLength = Math.ceil(canvas.width / settings['sprite-x']);
-    const yLength = Math.ceil(canvas.height / settings['sprite-y']);
+    const targetCtx = targetCanvas.getContext('bitmaprenderer');
 
-    targetCanvas.width = canvas.width + (xLength * settings['padding-x']) - settings['padding-x'] + (settings['buffer-x'] * 2);
-    targetCanvas.height = canvas.height + (yLength * settings['padding-y']) - settings['padding-y'] + (settings['buffer-y'] * 2);
+    settings.xLength = Math.ceil(canvas.width / settings['sprite-x']);
+    settings.yLength = Math.ceil(canvas.height / settings['sprite-y']);
 
-    targetCtx.clearRect(0, 0, targetCanvas.width, targetCanvas.height);
-    targetCtx.fillStyle = settings['padding-color'] + settings['padding-color-alpha'].toString(16).padStart(2, '0');
-    targetCtx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+    const targetWidth = canvas.width + (settings.xLength * settings['padding-x']) - settings['padding-x'] + (settings['buffer-x'] * 2);
+    const targetHeight = canvas.height + (settings.yLength * settings['padding-y']) - settings['padding-y'] + (settings['buffer-y'] * 2);
 
-    for (let y = 0; y < yLength; y++) {
-      for (let x = 0; x < xLength; x++) {
-          targetCtx.drawImage(canvas,
-            x * settings['sprite-x'],
-            y * settings['sprite-y'],
-            settings['sprite-x'],
-            settings['sprite-y'],
-            (x * settings['sprite-x']) + (x * settings['padding-x']) + settings['buffer-x'],
-            (y * settings['sprite-y']) + (y * settings['padding-y']) + settings['buffer-y'],
-            settings['sprite-x'],
-            settings['sprite-y']
-          );
-      }
-    }
+    maxScale = Math.floor(Math.sqrt(Math.max(targetWidth, targetHeight)));
 
-    if (!activeCanvas) {
-      activateCanvas();
-    }
+    canvas.toBlob(blob => {
+      const offscreenCanvas = new OffscreenCanvas(targetWidth, targetHeight);
+
+      worker.postMessage({msg: 'init', canvas: offscreenCanvas, settings: settings, sourceData: blob}, [offscreenCanvas]);
+
+      worker.addEventListener('message', event => {
+        if (event.data.msg === 'render') {
+          targetCanvas.width = targetWidth;
+          targetCanvas.height = targetHeight;
+          targetCtx.transferFromImageBitmap(event.data.bitmap);
+
+          if (!activeCanvas) {
+            activateCanvas();
+          }
+
+          dropArea.classList.remove('loading');
+        }
+      });
+    });
   }
 }
 
 function activateCanvas() {
   activeCanvas = true;
 
-  dropArea.addEventListener('mousemove', event => {
+  dropArea.addEventListener('pointermove', event => {
     event.preventDefault();
 
     if (dragging) {
@@ -149,21 +170,31 @@ function activateCanvas() {
   dropArea.addEventListener('wheel', event => {
     event.preventDefault();
 
-    scale += event.deltaY * -0.001;
-    scale = Math.min(Math.max(.125, scale), 4);
+    scale += event.deltaY * (-.0005 * scale);
+    scale = Math.min(Math.max(.1, scale), maxScale);
+
+    if (event.deltaY < 0) {
+      position.x = position.x;
+      position.y = position.y;
+    }
 
     transformCanvas();
   });
 
-  document.addEventListener('mousedown', event => {
-    if (event.target.closest('#drop-area')) {
+  dropArea.addEventListener('dblclick', event => {
+    event.preventDefault();
+    resetCanvas();
+  });
+
+  document.addEventListener('pointerdown', event => {
+    if (event.target.closest('#drop-area') && event.buttons !== 2) {
       dragging = true;
       lastPosition.x = event.clientX;
       lastPosition.y = event.clientY;
     }
   });
 
-  document.addEventListener('mouseup', event => dragging = false);
+  document.addEventListener('pointerup', event => dragging = false);
 
   spriteSettings.addEventListener('change', () => generateSheet());
 }
@@ -173,6 +204,16 @@ dropArea.addEventListener('click', () => {
     input.click();
   }
 });
+
+function resetCanvas() {
+  position.x = 0;
+  position.y = 0;
+  lastPosition.x = 0;
+  lastPosition.y = 0;
+  scale = 1;
+
+  transformCanvas();
+}
 
 function transformCanvas() {
   targetCanvas.style.transform = 'scale(' + scale + ') translate(' + position.x + 'px, ' + position.y + 'px)';
@@ -222,6 +263,10 @@ document.getElementById('download').addEventListener('click', () => {
   link.click();
 });
 
+document.getElementById('toggle-color').addEventListener('change', event => {
+  spriteSettings.querySelector('[name=padding-color]').toggleAttribute('disabled', !event.target.checked);
+});
+
 document.addEventListener('dragover', event => event.preventDefault());
 
 document.addEventListener('keydown', event => {
@@ -247,4 +292,7 @@ document.addEventListener('click', event => {
   }
 });
 
+spriteSettings.reset();
 document.getElementById('download').setAttribute('disabled', '');
+spriteSettings.querySelector('[name=padding-color]').setAttribute('disabled', '');
+spriteImport.reset();
