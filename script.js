@@ -26,6 +26,9 @@ let pendingFile;
 let dragging = false;
 let scale = 1;
 let maxScale;
+let modalActive = false;
+let repeat = false;
+let inputRepeater;
 
 const lastPosition = {
   x: 0,
@@ -43,10 +46,14 @@ function showModal() {
   document.getElementById('modal').classList.add('show');
 
   spriteImport.querySelector('input').focus();
+
+  modalActive = true;
 }
 
 function hideModal() {
   document.getElementById('modal').classList.remove('show');
+
+  modalActive = false;
 }
 
 function generateSheet(initial = false) {
@@ -110,8 +117,8 @@ function generateSheet(initial = false) {
       imageName = pendingFile.name;
       pendingFile = null;
 
-      const xLength = Math.ceil(tempCanvas.width / (settings['sprite-x'] + settings['padding-x']));
-      const yLength = Math.ceil(tempCanvas.height / (settings['sprite-y'] + settings['padding-y']));
+      const xLength = Math.ceil(tempCanvas.width / (settings['sprite-x'] + settings['padding-x'] + settings['padding-neg-x']));
+      const yLength = Math.ceil(tempCanvas.height / (settings['sprite-y'] + settings['padding-y'] + settings['padding-neg-y']));
 
       dataCanvas.width = xLength * settings['sprite-x'];
       dataCanvas.height = yLength * settings['sprite-y'];
@@ -119,8 +126,8 @@ function generateSheet(initial = false) {
       for (let y = 0; y < yLength; y++) {
         for (let x = 0; x < xLength; x++) {
           dataCtx.drawImage(tempCanvas,
-            (x * settings['sprite-x']) + (x * settings['padding-x']),
-            (y * settings['sprite-y']) + (y * settings['padding-y']),
+            x * (settings['sprite-x'] + settings['padding-x'] + settings['padding-neg-x']),
+            y * (settings['sprite-y'] + settings['padding-y'] + settings['padding-neg-y']),
             settings['sprite-x'],
             settings['sprite-y'],
             x * settings['sprite-x'],
@@ -139,6 +146,8 @@ function generateSheet(initial = false) {
       spriteSettings.querySelector('[name=sprite-y]').value = settings['sprite-y'];
       spriteSettings.querySelector('[name=padding-x]').value = settings['padding-x'];
       spriteSettings.querySelector('[name=padding-y]').value = settings['padding-y'];
+      spriteSettings.querySelector('[name=padding-neg-x]').value = settings['padding-neg-x'];
+      spriteSettings.querySelector('[name=padding-neg-y]').value = settings['padding-neg-y'];
 
       hideModal();
 
@@ -156,8 +165,8 @@ function generateSheet(initial = false) {
     settings.xLength = Math.ceil(dataCanvas.width / settings['sprite-x']);
     settings.yLength = Math.ceil(dataCanvas.height / settings['sprite-y']);
 
-    const targetWidth = dataCanvas.width + (settings.xLength * settings['padding-x']) - settings['padding-x'] + (settings['buffer-x'] * 2);
-    const targetHeight = dataCanvas.height + (settings.yLength * settings['padding-y']) - settings['padding-y'] + (settings['buffer-y'] * 2);
+    const targetWidth = dataCanvas.width + (settings.xLength * (settings['padding-x'] + settings['padding-neg-x'])) + (settings['buffer-x'] + settings['buffer-neg-x']);
+    const targetHeight = dataCanvas.height + (settings.yLength * (settings['padding-y'] + settings['padding-neg-y'])) + (settings['buffer-y'] + settings['buffer-neg-y']);
 
     maxScale = Math.floor(Math.sqrt(Math.max(targetWidth, targetHeight)));
 
@@ -179,6 +188,9 @@ function generateSheet(initial = false) {
             if (!activeCanvas) {
               activateCanvas();
             }
+
+            clearTimeout(debounceTimer);
+            debounce = false;
 
             dropArea.classList.remove('loading');
           }
@@ -234,10 +246,71 @@ function activateCanvas() {
     }
   });
 
-  document.addEventListener('pointerup', event => dragging = false);
-
   spriteSettings.addEventListener('change', () => generateSheet());
 }
+
+document.addEventListener('pointerdown', event => {
+  if (event.target.classList.contains('increment')) {
+    increment(event.target);
+
+    repeat = true;
+
+    setTimeout(() => {
+      if (repeat === true) {
+        inputRepeater = setInterval(() => {
+          increment(event.target);
+        }, 50);
+      }
+    }, 500);
+  } else if (event.target.classList.contains('decrement')) {
+    decrement(event.target);
+
+    repeat = true;
+
+    setTimeout(() => {
+      if (repeat === true) {
+        inputRepeater = setInterval(() => {
+          decrement(event.target);
+        }, 50);
+      }
+    }, 500);
+  }
+});
+
+function increment(element) {
+  let target = element.closest('.number-input').querySelector('input');
+
+  element.closest('.number-input').querySelector('input').stepUp();
+
+  if (element.closest('#sprite-settings')) {
+    spriteSettings.dispatchEvent(new Event('change'));
+  }
+}
+
+function decrement(element) {
+  let target = element.closest('.number-input').querySelector('input');
+
+  if (target.value > target.min) {
+    element.closest('.number-input').querySelector('input').stepDown();
+
+    if (element.closest('#sprite-settings')) {
+      spriteSettings.dispatchEvent(new Event('change'));
+    }
+  }
+}
+
+document.addEventListener('pointerout', event => {
+  if (event.target.classList.contains('increment') || event.target.classList.contains('decrement')) {
+    repeat = false;
+    clearInterval(inputRepeater);
+  }
+});
+
+document.addEventListener('pointerup', event => {
+  repeat = false;
+  clearInterval(inputRepeater);
+  dragging = false;
+});
 
 dropArea.addEventListener('click', () => {
   if (!dropArea.classList.contains('has-image')) {
@@ -310,25 +383,30 @@ document.getElementById('toggle-color').addEventListener('change', event => {
 document.addEventListener('dragover', event => event.preventDefault());
 
 document.addEventListener('keydown', event => {
-  if (event.key === 'Escape') {
-    pendingFile = null;
-    hideModal();
+  if (modalActive) {
+    if (event.key === 'Escape') {
+      pendingFile = null;
+      hideModal();
+    } else if (event.key === 'Tab') {
+      const firstElement = document.getElementById('modal').querySelector('.modal-close');
+      const lastElement = spriteImport.querySelector('[type=submit]');
+
+      if (event.shiftKey) {
+        if (document.activeElement === firstElement) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+      } else if (document.activeElement === lastElement) {
+        event.preventDefault();
+        firstElement.focus();
+      }
+    }
   }
 });
 
-document.addEventListener('click', event => {
-  if (event.target.classList.contains('increment')) {
-    event.target.closest('.number-input').querySelector('input').stepUp();
-
-    if (event.target.closest('#sprite-settings')) {
-      spriteSettings.dispatchEvent(new Event('change'));
-    }
-  } else if (event.target.classList.contains('decrement')) {
-    event.target.closest('.number-input').querySelector('input').stepDown();
-
-    if (event.target.closest('#sprite-settings')) {
-      spriteSettings.dispatchEvent(new Event('change'));
-    }
+document.getElementById('modal').addEventListener('click', event => {
+  if (event.target.classList.contains('modal-close')) {
+    hideModal();
   }
 });
 
