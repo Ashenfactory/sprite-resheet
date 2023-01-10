@@ -173,7 +173,7 @@ input[type=checkbox] {
 
 .settings-form input[type=number] {
   border-bottom: 2px solid #fff;
-  padding: .2rem .5rem;
+  padding: .2rem;
   background-color: #8a2846;
   outline: 2px solid transparent;
   transition: outline-color .2s ease, border-color .2s ease;
@@ -208,8 +208,6 @@ input[type=checkbox] {
 }
 
 .settings-form .settings-buttons {
-  display: flex;
-  flex-direction: column;
   width: 100%;
   align-self: flex-end;
 }
@@ -264,9 +262,9 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
 }
 
-.input-container {
-  display: flex;
-  flex-direction: row;
+.container .settings-form {
+  overflow: auto;
+  max-height: 50vh;
 }
 
 .number-input {
@@ -278,7 +276,6 @@ input[type=number]::-webkit-outer-spin-button {
 .modal-close {
   outline: none;
   -webkit-appearance: none;
-  background-color: transparent;
   border: none;
   width: 1rem;
   height: 1rem;
@@ -298,8 +295,6 @@ input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   background-color: transparent;
   border: none;
-  align-items: center;
-  justify-content: center;
   width: 1rem;
   height: 1rem;
   cursor: pointer;

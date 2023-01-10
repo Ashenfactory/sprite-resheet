@@ -5,16 +5,28 @@ self.onmessage = function(event) {
     const settings = event.data.settings;
 
     createImageBitmap(event.data.sourceData).then(sourceImage => {
-      if (settings['padding-color']) {
-        ctx.fillStyle = settings['padding-color'];
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-      }
 
       let spriteWidth = settings['sprite-x'] + settings['padding-x'] + settings['padding-neg-x'];
       let spriteHeight = settings['sprite-y'] + settings['padding-y'] + settings['padding-neg-y'];
 
       let offsetWidth = settings['buffer-x'] + settings['padding-neg-x'];
       let offsetHeight = settings['buffer-y'] + settings['padding-neg-y'];
+
+      if (settings['padding-color']) {
+        ctx.fillStyle = settings['padding-color'];
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        for (let y = 0; y < settings.yLength; y++) {
+          for (let x = 0; x < settings.xLength; x++) {
+            ctx.clearRect(
+              x * spriteWidth + offsetWidth,
+              y * spriteHeight + offsetHeight,
+              settings['sprite-x'],
+              settings['sprite-y']
+            );
+          }
+        }
+      }
 
       for (let y = 0; y < settings.yLength; y++) {
         for (let x = 0; x < settings.xLength; x++) {

@@ -223,9 +223,8 @@ function activateCanvas() {
     scale += event.deltaY * (-.0005 * scale);
     scale = Math.min(Math.max(.1, scale), maxScale);
 
-    if (event.deltaY < 0) {
-      position.x = position.x;
-      position.y = position.y;
+    if (scale < 1.050 && scale > .950) {
+      scale = 1;
     }
 
     transformCanvas();
