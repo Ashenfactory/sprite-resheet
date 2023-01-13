@@ -150,6 +150,10 @@ function generateSheet(initial = false) {
       spriteSettings.querySelector('[name=padding-y]').value = settings['padding-y'];
       spriteSettings.querySelector('[name=padding-neg-x]').value = settings['padding-neg-x'];
       spriteSettings.querySelector('[name=padding-neg-y]').value = settings['padding-neg-y'];
+      spriteSettings.querySelector('[name=buffer-x]').value = settings['offset-x'];
+      spriteSettings.querySelector('[name=buffer-y]').value = settings['offset-y'];
+      spriteSettings.querySelector('[name=buffer-neg-x]').value = settings['offset-neg-x'];
+      spriteSettings.querySelector('[name=buffer-neg-y]').value = settings['offset-neg-y'];
 
       hideModal();
 
@@ -161,14 +165,17 @@ function generateSheet(initial = false) {
     if (activeCanvas) {
       resetCanvas();
     }
+
+    spriteSettings.classList.remove('collapse');
   } else {
     new FormData(spriteSettings).forEach((value, key) => (settings[key] = value.startsWith('#') ? value : parseInt(value)));
 
     settings.xLength = Math.ceil(dataCanvas.width / settings['sprite-x']);
     settings.yLength = Math.ceil(dataCanvas.height / settings['sprite-y']);
 
-    const targetWidth = dataCanvas.width + (settings.xLength * (settings['padding-x'] + settings['padding-neg-x'])) + (settings['buffer-x'] + settings['buffer-neg-x']);
-    const targetHeight = dataCanvas.height + (settings.yLength * (settings['padding-y'] + settings['padding-neg-y'])) + (settings['buffer-y'] + settings['buffer-neg-y']);
+    const targetWidth = (settings.xLength * (settings['sprite-x'] + settings['padding-x'] + settings['padding-neg-x'])) + (settings['buffer-x'] + settings['buffer-neg-x']);
+    const targetHeight = (settings.yLength * (settings['sprite-y'] + settings['padding-y'] + settings['padding-neg-y'])) + (settings['buffer-y'] + settings['buffer-neg-y']);
+
 
     maxScale = Math.floor(Math.sqrt(Math.max(targetWidth, targetHeight)));
 
@@ -243,7 +250,11 @@ function activateCanvas() {
     }
   });
 
-  spriteSettings.addEventListener('change', () => generateSheet());
+  spriteSettings.addEventListener('change', event => {
+    if (!event.target.classList.contains('sync-toggle')) {
+      generateSheet();
+    }
+  });
 }
 
 document.addEventListener('change', event => {
@@ -253,12 +264,14 @@ document.addEventListener('change', event => {
 document.addEventListener('pointerdown', event => {
   let increment;
 
-  if (event.target.classList.contains('increment')) {
-    repeat = true;
-    increment = true;
-  } else if (event.target.classList.contains('decrement')) {
-    repeat = true;
-    increment = false;
+  if (event.buttons !== 2) {
+    if (event.target.classList.contains('increment')) {
+      repeat = true;
+      increment = true;
+    } else if (event.target.classList.contains('decrement')) {
+      repeat = true;
+      increment = false;
+    }
   }
 
   if (repeat) {

@@ -1,16 +1,17 @@
-self.onmessage = function(event) {
+'use strict';
+
+onmessage = event => {
   if (event.data.msg === 'init') {
     const canvas = event.data.canvas;
     const ctx = canvas.getContext('2d');
     const settings = event.data.settings;
 
     createImageBitmap(event.data.sourceData).then(sourceImage => {
-
       let spriteWidth = settings['sprite-x'] + settings['padding-x'] + settings['padding-neg-x'];
       let spriteHeight = settings['sprite-y'] + settings['padding-y'] + settings['padding-neg-y'];
 
-      let offsetWidth = settings['buffer-x'] + settings['padding-neg-x'];
-      let offsetHeight = settings['buffer-y'] + settings['padding-neg-y'];
+      let offsetWidth = settings['buffer-neg-x'] + settings['padding-neg-x'];
+      let offsetHeight = settings['buffer-y'] + settings['padding-y'];
 
       if (settings['padding-color']) {
         ctx.fillStyle = settings['padding-color'];
@@ -45,7 +46,7 @@ self.onmessage = function(event) {
 
       if (settings['stretch-padding']) {
         for (let x = 0; x < settings.xLength; x++) {
-          let = stretchOffset = x * (spriteWidth) + offsetWidth;
+          let stretchOffset = x * (spriteWidth) + offsetWidth;
 
           ctx.drawImage(canvas,
             stretchOffset,
@@ -73,7 +74,7 @@ self.onmessage = function(event) {
         }
 
         for (let y = 0; y < settings.yLength; y++) {
-          let = stretchOffset = y * (spriteHeight) + offsetHeight;
+          let stretchOffset = y * (spriteHeight) + offsetHeight;
 
           ctx.drawImage(canvas,
             0,
@@ -81,9 +82,9 @@ self.onmessage = function(event) {
             canvas.width,
             1,
             0,
-            stretchOffset - settings['padding-neg-y'],
+            stretchOffset - settings['padding-y'],
             canvas.width,
-            settings['padding-neg-y']
+            settings['padding-y']
           );
 
           stretchOffset += settings['sprite-y'];
@@ -96,12 +97,12 @@ self.onmessage = function(event) {
             0,
             stretchOffset,
             canvas.width,
-            settings['padding-y']
+            settings['padding-neg-y']
           );
         }
       }
 
-      self.postMessage({msg: 'render', bitmap: canvas.transferToImageBitmap()});
+      postMessage({msg: 'render', bitmap: canvas.transferToImageBitmap()});
     });
   }
 }

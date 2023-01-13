@@ -28,17 +28,21 @@ button {
 .drag-area {
   border: 4px dashed #fff;
   width: calc(100% - 2rem);
+  height: calc(100% - 2rem);
   display: flex;
   align-items: center;
-  flex-grow: 1;
   justify-content: center;
-  flex-direction: column;
-  margin: 1rem;
-  transition: opacity .2s ease, background .2s ease, outline-color .2s ease-in;
+  margin: auto;
+  transition: opacity .2s ease, background .2s ease, outline-color .2s ease-in, height .2s ease, width .2s ease;
   position: relative;
   overflow: hidden;
   outline: 4px solid transparent;
   outline-offset: -4px;
+}
+
+.drag-area:not(.has-image) {
+  height: 200px;
+  width: 320px;
 }
 
 .drag-area:not(.has-image):hover {
@@ -88,7 +92,7 @@ button {
   max-width: 150px;
   opacity: 0;
   aspect-ratio: 1;
-  background: no-repeat linear-gradient(#fff 0 0) 0% 50%, no-repeat linear-gradient(#fff 0 0) 50% 50%, no-repeat linear-gradient(#fff 0 0) 100% 50%;
+  background: no-repeat linear-gradient(#fff 0 0) 0 50%, no-repeat linear-gradient(#fff 0 0) 50% 50%, no-repeat linear-gradient(#fff 0 0) 100% 50%;
   background-size: 20% 100%;
   animation: load 1s infinite linear;
   transition: opacity .2s ease;
@@ -143,7 +147,7 @@ canvas {
 }
 
 input {
-  accent-color: #e05780;
+  accent-color: #cd446d;
 }
 
 input[type=color],
@@ -190,12 +194,12 @@ input[type=checkbox] {
 }
 
 .settings-form input[type=number]:hover {
-  border-color: #e05780;
+  border-color: #cd446d;
 }
 
 .settings-form input[type=number]:focus {
-  outline-color: #e05780;
-  border-color: #e05780;
+  outline-color: #cd446d;
+  border-color: #cd446d;
 }
 
 .settings-form input[type=color] {
@@ -214,7 +218,7 @@ input[type=checkbox] {
 }
 
 .settings-form input[type=color]:focus {
-  outline-color: #e05780;
+  outline-color: #cd446d;
 }
 
 .settings-form .settings-buttons {
@@ -224,7 +228,7 @@ input[type=checkbox] {
 }
 
 .settings-buttons button {
-  background-color: #e05780;
+  background-color: #cd446d;
   color: #fff;
   border-radius: 0;
   border: none;
@@ -236,7 +240,7 @@ input[type=checkbox] {
 }
 
 .settings-buttons button:focus {
-  outline-color: #e05780;
+  outline-color: #cd446d;
 }
 
 .settings-buttons button[disabled] {
@@ -251,7 +255,6 @@ input[type=checkbox] {
 
 .modal .settings-form .settings-buttons {
   width: 100%;
-  max-height: auto;
   flex-direction: column;
 }
 
@@ -264,6 +267,7 @@ input[type=number] {
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
   -webkit-appearance: none;
+  -moz-appearance: none;
 }
 
 .container .settings-form {
@@ -271,17 +275,20 @@ input[type=number]::-webkit-outer-spin-button {
   width: 100%;
   position: absolute;
   height: 100%;
-  top: 0rem;
+  top: 0;
   min-height: 640px;
   justify-content: flex-start;
   min-width: 320px;
-  transition: height .2s ease, min-height .2s ease;
+  transition: height .2s ease, min-height .2s ease, width .2s ease, min-width .2s ease, background-color .2s ease;
 }
 
 .container .settings-form.collapse {
   height: 4rem;
   overflow: hidden;
   min-height: 0;
+  width: 100px;
+  min-width: 100px;
+  background-color: #cd446d;
 }
 
 .toggle-button {
@@ -402,7 +409,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .modal-close {
-  outline: none;
   -webkit-appearance: none;
   border: none;
   width: 1rem;
@@ -419,7 +425,6 @@ input[type=number]::-webkit-outer-spin-button {
 }
 
 .number-input button {
-  outline: none;
   -webkit-appearance: none;
   background-color: transparent;
   border: none;
@@ -429,6 +434,11 @@ input[type=number]::-webkit-outer-spin-button {
   margin: 0;
   position: relative;
   transition: opacity .2s ease;
+}
+
+.modal-close:focus,
+.number-input button:focus {
+  outline: none;
 }
 
 .number-input button:hover,

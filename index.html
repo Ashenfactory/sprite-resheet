@@ -12,11 +12,11 @@
     <div id="drop-area" class="drag-area">
       <header>Upload image</header>
       <canvas id="target"></canvas>
-      <input type="file" accept="image/png, image/jpeg, image/gif, image/webp, image/avif, image/bmp, image/x-icon" tabindex="-1">
+      <input type="file" accept="image/png, image/jpeg, image/gif, image/webp, image/avif, image/bmp, image/x-icon" tabindex="-1" aria-hidden="true">
     </div>
     
-    <form method="post" id="sprite-settings" class="settings-form">
-      <button id="form-toggle" class="toggle-button" type="button"></button>
+    <form method="post" id="sprite-settings" class="settings-form collapse">
+      <button id="form-toggle" class="toggle-button" type="button" title="Toggle menu"></button>
 
       <div class="settings-buttons">
         <button id="download" type="button" disabled>Download</button>
@@ -27,18 +27,18 @@
         <label>Sprite</label>
         <div class="dimension-container short">
           <div class="number-input">
-            <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16">
+            <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16" title="Sprite height">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment sprite height"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement sprite height"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16">
+            <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16" title="Sprite width">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment sprite width"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement sprite width"></button>
             </div>
           </div>
 
@@ -50,34 +50,34 @@
         <label>Padding</label>
         <div class="dimension-container">
           <div class="number-input">
-            <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0">
+            <input type="number" name="padding-y" step="1" min="0" max="9999" value="0" title="Top padding">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment top padding"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement top padding"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="padding-x" step="1" min="0" max="9999" value="0">
+            <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0" title="Left padding">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment left padding"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement left padding"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0">
+            <input type="number" name="padding-x" step="1" min="0" max="9999" value="0" title="Right padding">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment right padding"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement right padding"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="padding-y" step="1" min="0" max="9999" value="0">
+            <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0" title="Bottom padding">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment bottom padding"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement bottom padding"></button>
             </div>
           </div>
 
@@ -89,34 +89,34 @@
         <label>Buffer</label>
         <div class="dimension-container">
           <div class="number-input">
-            <input type="number" name="buffer-x" step="1" min="0" max="9999" value="0">
+            <input type="number" name="buffer-y" step="1" min="0" max="9999" value="0" title="Top buffer">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment top buffer"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement top buffer"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="buffer-neg-x" step="1" min="0" max="9999" value="0">
+            <input type="number" name="buffer-neg-x" step="1" min="0" max="9999" value="0" title="Left buffer">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment left buffer"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement left buffer"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="buffer-y" step="1" min="0" max="9999" value="0">
+            <input type="number" name="buffer-x" step="1" min="0" max="9999" value="0" title="Right buffer">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment right buffer"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement right buffer"></button>
             </div>
           </div>
 
           <div class="number-input">
-            <input type="number" name="buffer-neg-y" step="1" min="0" max="9999" value="0">
+            <input type="number" name="buffer-neg-y" step="1" min="0" max="9999" value="0" title="Bottom buffer">
             <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
+              <button type="button" class="increment" tabindex="-1" title="Increment bottom buffer"></button>
+              <button type="button" class="decrement" tabindex="-1" title="Decrement bottom buffer"></button>
             </div>
           </div>
 
@@ -127,20 +127,20 @@
       <div class="input-container">
         <label>Padding color</label>
         <div class="color-container">
-          <input type="checkbox" id="toggle-color">
-          <input type="color" name="padding-color" value="#000000" disabled>
+          <input type="checkbox" id="toggle-color" title="Toggle padding color">
+          <input type="color" name="padding-color" value="#000000" title="Padding color" disabled>
         </div>
       </div>
       <div class="input-container">
         <label>Stretch padding</label>
-          <input type="checkbox" name="stretch-padding" value="1" id="toggle-stretch">
+          <input type="checkbox" name="stretch-padding" value="1" id="toggle-stretch" title="Toggle stretch padding">
       </div>
     </form>
   </div>
 
-  <div class="modal" id="modal">
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-label="Upload">
     <div class="modal-content">
-      <button class="modal-close" type="button"></button>
+      <button class="modal-close" type="button" title="Close"></button>
       <form method="post" id="sprite-import" class="settings-form">
         <div class="settings-buttons">
           <button type="submit">Generate</button>
@@ -150,18 +150,18 @@
           <label>Sprite</label>
           <div class="dimension-container short">
             <div class="number-input">
-              <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16">
+              <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16" title="Sprite height">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment sprite height"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement sprite height"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16">
+              <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16" title="Sprite width">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment sprite width"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement sprite width"></button>
               </div>
             </div>
 
@@ -173,34 +173,34 @@
           <label>Crop sprite</label>
           <div class="dimension-container">
             <div class="number-input">
-              <input type="number" name="padding-x" step="1" min="0" max="9999" value="0">
+              <input type="number" name="padding-y" step="1" min="0" max="9999" value="0" title="Top sprite cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment top sprite cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement top sprite cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0">
+              <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0" title="Left sprite cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment left sprite cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement left sprite cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="padding-y" step="1" min="0" max="9999" value="0">
+              <input type="number" name="padding-x" step="1" min="0" max="9999" value="0" title="Right sprite cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment right sprite cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement right sprite cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0">
+              <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0" title="Bottom sprite cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment bottom sprite cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement bottom sprite cropping"></button>
               </div>
             </div>
 
@@ -212,34 +212,34 @@
           <label>Crop sheet</label>
           <div class="dimension-container">
             <div class="number-input">
-              <input type="number" name="offset-x" step="1" min="0" max="9999" value="0">
+              <input type="number" name="offset-y" step="1" min="0" max="9999" value="0" title="Top sheet cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment top sheet cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement top sheet cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="offset-neg-x" step="1" min="0" max="9999" value="0">
+              <input type="number" name="offset-neg-x" step="1" min="0" max="9999" value="0" title="Left sheet cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment left sheet cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement left sheet cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="offset-y" step="1" min="0" max="9999" value="0">
+              <input type="number" name="offset-x" step="1" min="0" max="9999" value="0" title="Right sheet cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment right sheet cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement right sheet cropping"></button>
               </div>
             </div>
 
             <div class="number-input">
-              <input type="number" name="offset-neg-y" step="1" min="0" max="9999" value="0">
+              <input type="number" name="offset-neg-y" step="1" min="0" max="9999" value="0" title="Bottom sheet cropping">
               <div class="number-control-container">
-                <button type="button" class="increment" tabindex="-1"></button>
-                <button type="button" class="decrement" tabindex="-1"></button>
+                <button type="button" class="increment" tabindex="-1" title="Increment bottom sheet cropping"></button>
+                <button type="button" class="decrement" tabindex="-1" title="Decrement bottom sheet cropping"></button>
               </div>
             </div>
 
