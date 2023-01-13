@@ -12,10 +12,9 @@ html {
 }
 
 .container {
+  min-width: 320px;
   height: 100%;
   display: flex;
-  flex-direction: column;
-  align-items: center;
   background: #8a2846;
 }
 
@@ -117,13 +116,16 @@ canvas {
   width: 100%;
   background-color: #602437;
   padding: 1rem;
+  flex-direction: column;
+  align-items: center;
   justify-content: center;
-  flex-wrap: wrap;
 }
 
 .settings-form label {
   font-weight: 500;
   margin-bottom: 1rem;
+  text-align: center;
+  border-bottom: 2px solid #fff;
 }
 
 .settings-form > div {
@@ -131,6 +133,13 @@ canvas {
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
+  width: 100%;
+}
+
+.input-container > input[type=checkbox],
+.input-container > .color-container,
+.input-container > .dimension-container {
+  align-self: center;
 }
 
 input {
@@ -163,6 +172,7 @@ input[type=color][disabled] {
 .color-container {
   display: flex;
   flex-direction: row;
+  width: 6rem;
 }
 
 input[type=checkbox] {
@@ -208,6 +218,7 @@ input[type=checkbox] {
 }
 
 .settings-form .settings-buttons {
+  margin-top: 2rem;
   width: 100%;
   align-self: flex-end;
 }
@@ -238,17 +249,10 @@ input[type=checkbox] {
   margin-bottom: .5rem;
 }
 
-@media (min-width: 599.98px) {
-  .settings-form .settings-buttons {
-    width: auto;
-    max-height: 3rem;
-    flex-direction: row;
-  }
-
-  .settings-buttons button:not(:last-of-type) {
-    margin-bottom: 0;
-    margin-right: .5rem;
-  }
+.modal .settings-form .settings-buttons {
+  width: 100%;
+  max-height: auto;
+  flex-direction: column;
 }
 
 input[type=number] {
@@ -264,13 +268,137 @@ input[type=number]::-webkit-outer-spin-button {
 
 .container .settings-form {
   overflow: auto;
-  max-height: 50vh;
+  width: 100%;
+  position: absolute;
+  height: 100%;
+  top: 0rem;
+  min-height: 640px;
+  justify-content: flex-start;
+  min-width: 320px;
+  transition: height .2s ease, min-height .2s ease;
+}
+
+.container .settings-form.collapse {
+  height: 4rem;
+  overflow: hidden;
+  min-height: 0;
+}
+
+.toggle-button {
+  width: 100%;
+  height: 1rem;
+  border: none;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='none' stroke='%23fff' d='M0 1h8M0 4h8M0 7h8'/%3E%3C/svg%3E");
+  background-size: 1rem 1rem;
+  background-position: center;
+  background-repeat: no-repeat;
+  transition: opacity .2s ease;
+  padding: 1rem 3rem;
+  cursor: pointer;
+}
+
+@media (min-width: 320px) {
+  .container .settings-form {
+    right: 0;
+    width: 320px;
+  }
 }
 
 .number-input {
   display: flex;
   flex-direction: row;
-  width: 7rem;
+  width: 4.5rem;
+}
+
+.dimension-container {
+  position: relative;
+  height: 8rem;
+  width: 13rem;
+}
+
+.dimension-container.short {
+  height: 5rem;
+}
+
+.dimension-container > div,
+.dimension-container > input {
+  position: absolute;
+}
+
+.dimension-container > div:nth-of-type(1) {
+  top: 0;
+  left: calc(50% + .5rem);
+  transform: translateX(-50%);
+}
+
+.dimension-container > div:nth-of-type(2) {
+  top: 50%;
+  left: 0;
+  transform: translateY(-50%);
+}
+
+.dimension-container > div:nth-of-type(3) {
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%);
+}
+
+.dimension-container > div:nth-of-type(4) {
+  bottom: 0;
+  left: calc(50% + .5rem);
+  transform: translateX(-50%);
+}
+
+.dimension-container.short > div:nth-of-type(2) {
+  top: auto;
+  transform: none;
+  bottom: 0;
+}
+
+.sync-toggle {
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) rotate(45deg);
+  appearance: none;
+  position: relative;
+  transition: opacity .2s ease;
+}
+
+.short .sync-toggle {
+  top: auto;
+  bottom: 0;
+  transform: translate(-50%, -15%) rotate(45deg);
+}
+
+.sync-toggle::before, .sync-toggle::after {
+  content: '';
+  position: absolute;
+  height: 1rem;
+  width: 1rem;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 16'%3E%3Cpath fill='none' stroke-linecap='round' stroke-width='2' stroke='%23fff' d='M1 5a4 4 90 0 1 8 0v4a4 4 90 0 1-8 0zm4 5v5'/%3E%3C/svg%3E"), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 10 16'%3E%3Cpath fill='none' stroke-linecap='round' stroke-width='2' stroke='%23fff' d='M1 5a4 4 90 0 1 8 0v4a4 4 90 0 1-8 0zm4 5v5'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: top center, bottom center;
+  left: 50%;
+  top: -.25rem;
+  transition: transform .2s ease;
+}
+
+.sync-toggle::before {
+  transform: translate(-50%, -.25rem);
+}
+
+.sync-toggle::after {
+  transform: rotate(180deg) translate(50%, -1.25rem);
+}
+
+.sync-toggle:checked::before {
+  transform: translate(-50%, 0);
+}
+
+.sync-toggle:checked::after {
+  transform: rotate(180deg) translate(50%, -1rem);
+
 }
 
 .modal-close {
@@ -307,7 +435,9 @@ input[type=number]::-webkit-outer-spin-button {
 .modal-close:hover,
 .modal-close:focus,
 .drag-area.loading canvas,
-.settings-buttons button:not([disabled]):hover {
+.settings-buttons button:not([disabled]):hover,
+.sync-toggle:hover,
+.toggle-button:hover {
   opacity: .5;
 }
 
@@ -358,7 +488,7 @@ input[type=number]::-webkit-outer-spin-button {
   position: relative;
   background-color: #602437;
   margin: 1rem;
-  max-width: 375px;
+  width: 320px;
 }
 
 [type=file] {

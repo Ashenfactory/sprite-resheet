@@ -1,3 +1,5 @@
+'use strict';
+
 const dropArea = document.getElementById('drop-area');
 const input = dropArea.querySelector('input');
 const targetCanvas = document.getElementById('target');
@@ -248,65 +250,83 @@ function activateCanvas() {
   spriteSettings.addEventListener('change', () => generateSheet());
 }
 
+document.addEventListener('change', event => {
+  if (event.target.type === 'number') updateValue(event.target);
+});
+
 document.addEventListener('pointerdown', event => {
+  let increment;
+
   if (event.target.classList.contains('increment')) {
-    increment(event.target);
-
     repeat = true;
-
-    setTimeout(() => {
-      if (repeat === true) {
-        inputRepeater = setInterval(() => {
-          increment(event.target);
-        }, 50);
-      }
-    }, 500);
+    increment = true;
   } else if (event.target.classList.contains('decrement')) {
-    decrement(event.target);
-
     repeat = true;
+    increment = false;
+  }
 
-    setTimeout(() => {
+  if (repeat) {
+    updateValue(event.target, increment);
+
+    clearTimeout(inputRepeater);
+    clearInterval(inputRepeater);
+
+    inputRepeater = setTimeout(() => {
       if (repeat === true) {
         inputRepeater = setInterval(() => {
-          decrement(event.target);
+          updateValue(event.target, increment);
         }, 50);
       }
     }, 500);
   }
 });
 
-function increment(element) {
-  let target = element.closest('.number-input').querySelector('input');
+function updateValue(element, increment) {
+  const target = element.closest('.number-input').querySelector('input');
+  const dimensionContainer = element.closest('.dimension-container');
 
-  element.closest('.number-input').querySelector('input').stepUp();
+  let update;
 
-  if (element.closest('#sprite-settings')) {
-    spriteSettings.dispatchEvent(new Event('change'));
+  if (!target.validity.valid) {
+    let number = parseInt(target.value, 10);
+
+    target.value = isNaN(number) ? target.min : number > target.max ? target.max : target.min;
+
+    update = true;
   }
-}
 
-function decrement(element) {
-  let target = element.closest('.number-input').querySelector('input');
+  if (increment !== undefined && (increment && target.value < target.max || !increment && target.value > target.min)) {
+    increment ? target.stepUp() : target.stepDown();
 
-  if (target.value > target.min) {
-    element.closest('.number-input').querySelector('input').stepDown();
+    update = true;
+  }
 
-    if (element.closest('#sprite-settings')) {
-      spriteSettings.dispatchEvent(new Event('change'));
-    }
+  if (dimensionContainer && dimensionContainer.querySelector('.sync-toggle').checked) {
+    dimensionContainer.querySelectorAll('input[type=number]').forEach(elm => {
+        if (elm.value !== target.value) {
+          elm.value = target.value;
+
+          update = true;
+        }
+    });
+  }
+
+  if (element.closest('#sprite-settings') && update) {
+    spriteSettings.dispatchEvent(new Event('change'));
   }
 }
 
 document.addEventListener('pointerout', event => {
   if (event.target.classList.contains('increment') || event.target.classList.contains('decrement')) {
     repeat = false;
+    clearTimeout(inputRepeater);
     clearInterval(inputRepeater);
   }
 });
 
 document.addEventListener('pointerup', event => {
   repeat = false;
+  clearTimeout(inputRepeater);
   clearInterval(inputRepeater);
   dragging = false;
 });
@@ -401,6 +421,10 @@ document.addEventListener('keydown', event => {
       }
     }
   }
+});
+
+document.getElementById('form-toggle').addEventListener('click', evnet => {
+  spriteSettings.classList.toggle('collapse');
 });
 
 document.getElementById('modal').addEventListener('click', event => {

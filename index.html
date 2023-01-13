@@ -4,112 +4,126 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sprite Resheet - Redo sprite sheet padding</title>
-    <link rel="stylesheet" href="style.css?v=4">
+    <link rel="stylesheet" href="style.css?2023-01-13">
     <link rel="icon" href="favicon.png">
 </head>
 <body>
   <div class="container">
+    <div id="drop-area" class="drag-area">
+      <header>Upload image</header>
+      <canvas id="target"></canvas>
+      <input type="file" accept="image/png, image/jpeg, image/gif, image/webp, image/avif, image/bmp, image/x-icon" tabindex="-1">
+    </div>
+    
     <form method="post" id="sprite-settings" class="settings-form">
+      <button id="form-toggle" class="toggle-button" type="button"></button>
+
+      <div class="settings-buttons">
+        <button id="download" type="button" disabled>Download</button>
+        <button id="upload" type="button">Upload</button>
+      </div>
+
       <div class="input-container">
-        <label>Sprite width</label>
-        <div class="number-input">
-          <input type="number" name="sprite-x" step="1" min="1" value="16">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
+        <label>Sprite</label>
+        <div class="dimension-container short">
+          <div class="number-input">
+            <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
           </div>
+
+          <div class="number-input">
+            <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
         </div>
       </div>
+
       <div class="input-container">
-        <label>Sprite height</label>
-        <div class="number-input">
-          <input type="number" name="sprite-y" step="1" min="1" value="16">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
+        <label>Padding</label>
+        <div class="dimension-container">
+          <div class="number-input">
+            <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
           </div>
+
+          <div class="number-input">
+            <input type="number" name="padding-x" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <div class="number-input">
+            <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <div class="number-input">
+            <input type="number" name="padding-y" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
         </div>
       </div>
+
       <div class="input-container">
-        <label>Padding left</label>
-        <div class="number-input">
-          <input type="number" name="padding-neg-x" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
+        <label>Buffer</label>
+        <div class="dimension-container">
+          <div class="number-input">
+            <input type="number" name="buffer-x" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
           </div>
+
+          <div class="number-input">
+            <input type="number" name="buffer-neg-x" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <div class="number-input">
+            <input type="number" name="buffer-y" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <div class="number-input">
+            <input type="number" name="buffer-neg-y" step="1" min="0" max="9999" value="0">
+            <div class="number-control-container">
+              <button type="button" class="increment" tabindex="-1"></button>
+              <button type="button" class="decrement" tabindex="-1"></button>
+            </div>
+          </div>
+
+          <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
         </div>
       </div>
-      <div class="input-container">
-        <label>Padding right</label>
-        <div class="number-input">
-          <input type="number" name="padding-x" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Padding top</label>
-        <div class="number-input">
-          <input type="number" name="padding-neg-y" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Padding bottom</label>
-        <div class="number-input">
-          <input type="number" name="padding-y" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Buffer left</label>
-        <div class="number-input">
-          <input type="number" name="buffer-x" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Buffer right</label>
-        <div class="number-input">
-          <input type="number" name="buffer-neg-x" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Buffer top</label>
-        <div class="number-input">
-          <input type="number" name="buffer-y" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
-      <div class="input-container">
-        <label>Buffer bottom</label>
-        <div class="number-input">
-          <input type="number" name="buffer-neg-y" step="1" min="0" value="0">
-          <div class="number-control-container">
-            <button type="button" class="increment" tabindex="-1"></button>
-            <button type="button" class="decrement" tabindex="-1"></button>
-          </div>
-        </div>
-      </div>
+
       <div class="input-container">
         <label>Padding color</label>
         <div class="color-container">
@@ -121,130 +135,121 @@
         <label>Stretch padding</label>
           <input type="checkbox" name="stretch-padding" value="1" id="toggle-stretch">
       </div>
-      <div class="settings-buttons">
-        <button id="download" type="button" disabled>Download</button>
-        <button id="upload" type="button">Upload</button>
-      </div>
     </form>
-
-    <div id="drop-area" class="drag-area">
-      <header>Upload image</header>
-      <canvas id="target"></canvas>
-      <input type="file" accept="image/png, image/jpeg, image/gif, image/webp, image/avif, image/bmp, image/x-icon" tabindex="-1">
-    </div>
   </div>
 
   <div class="modal" id="modal">
     <div class="modal-content">
       <button class="modal-close" type="button"></button>
       <form method="post" id="sprite-import" class="settings-form">
-        <div class="input-container">
-          <label>Sprite width</label>
-          <div class="number-input">
-            <input type="number" name="sprite-x" step="1" min="1" value="16">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Sprite height</label>
-          <div class="number-input">
-            <input type="number" name="sprite-y" step="1" min="1" value="16">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Cut left</label>
-          <div class="number-input">
-            <input type="number" name="padding-x" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Cut right</label>
-          <div class="number-input">
-            <input type="number" name="padding-neg-x" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Cut top</label>
-          <div class="number-input">
-            <input type="number" name="padding-y" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Cut bottom</label>
-          <div class="number-input">
-            <input type="number" name="padding-neg-y" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Offset left</label>
-          <div class="number-input">
-            <input type="number" name="offset-x" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Offset Right</label>
-          <div class="number-input">
-            <input type="number" name="offset-neg-x" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Offset top</label>
-          <div class="number-input">
-            <input type="number" name="offset-y" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
-        <div class="input-container">
-          <label>Offset Bottom</label>
-          <div class="number-input">
-            <input type="number" name="offset-neg-y" step="1" min="0" value="0">
-            <div class="number-control-container">
-              <button type="button" class="increment" tabindex="-1"></button>
-              <button type="button" class="decrement" tabindex="-1"></button>
-            </div>
-          </div>
-        </div>
         <div class="settings-buttons">
           <button type="submit">Generate</button>
+        </div>
+
+        <div class="input-container">
+          <label>Sprite</label>
+          <div class="dimension-container short">
+            <div class="number-input">
+              <input type="number" name="sprite-x" step="1" min="1" max="9999" value="16">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="sprite-y" step="1" min="1" max="9999" value="16">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label>Crop sprite</label>
+          <div class="dimension-container">
+            <div class="number-input">
+              <input type="number" name="padding-x" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="padding-neg-x" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="padding-y" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="padding-neg-y" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
+          </div>
+        </div>
+
+        <div class="input-container">
+          <label>Crop sheet</label>
+          <div class="dimension-container">
+            <div class="number-input">
+              <input type="number" name="offset-x" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="offset-neg-x" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="offset-y" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <div class="number-input">
+              <input type="number" name="offset-neg-y" step="1" min="0" max="9999" value="0">
+              <div class="number-control-container">
+                <button type="button" class="increment" tabindex="-1"></button>
+                <button type="button" class="decrement" tabindex="-1"></button>
+              </div>
+            </div>
+
+            <input type="checkbox" class="sync-toggle" title="Toggle linked values" checked>
+          </div>
         </div>
       </form>
     </div>
   </div>
 
-  <script src="script.js?v=4"></script>
+  <script src="script.js?2023-01-13"></script>
 </body>
 </html>
